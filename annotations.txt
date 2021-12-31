@@ -14,3 +14,9 @@ npm install @react-navigation/native-stack
 Bottom navigation
 npm install @react-navigation/bottom-tabs
 
+
+Formularios de cadastro
+validações e mensagem de erro
+
+Mascara de Formularios
+npm install react-native-masked-text

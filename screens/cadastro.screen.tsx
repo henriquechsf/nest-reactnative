@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 import {Text} from 'react-native-elements';
 import {Button} from 'react-native-elements/dist/buttons/Button';
 import {CheckBox} from 'react-native-elements/dist/checkbox/CheckBox';
 import {Input} from 'react-native-elements/dist/input/Input';
-import {Checkbox} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../style/main-style';
 
@@ -46,7 +45,10 @@ const CadastroScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80}
+      style={styles.container}>
       <Text h3>Cadastre-se</Text>
       <Input
         placeholder="E-mail"
@@ -72,7 +74,18 @@ const CadastroScreen = ({navigation}) => {
         }}
         keyboardType="number-pad"
         errorMessage={errorCpf}
+        // ref={ref => (cpfField = ref)}
       />
+
+      {/* <View style={customStyles.containerMask}>
+        <TextInputMask
+          type={'cpf'}
+          value={cpf}
+          onChangeText={text => {
+            setCpf(text);
+          }}
+        />
+      </View> */}
 
       <Input
         placeholder="Telefone"
@@ -94,17 +107,32 @@ const CadastroScreen = ({navigation}) => {
       <Button
         icon={<Icon name="arrow-right" size={15} color="black" />}
         title=" Salvar"
-        buttonStyle={buttonStyles.button}
+        buttonStyle={customStyles.button}
         onPress={() => salvar()}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default CadastroScreen;
 
-const buttonStyles = StyleSheet.create({
+const customStyles = StyleSheet.create({
   button: {
     marginTop: 10,
+  },
+  maskedInput: {
+    flexGrow: 1,
+    height: 40,
+    fontSize: 18,
+    borderColor: '#999',
+    borderBottomWidth: 1,
+    borderStyle: 'solid',
+    alignSelf: 'flex-start',
+  },
+  containerMask: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
   },
 });
