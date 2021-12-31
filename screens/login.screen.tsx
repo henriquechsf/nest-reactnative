@@ -15,7 +15,7 @@ const LoginScreen = ({navigation}) => {
     // desabilita o botão voltar resetando a pilha
     navigation.reset({
       index: 0,
-      routes: [{name: 'Home'}],
+      routes: [{name: 'Principal'}],
     });
   };
 
