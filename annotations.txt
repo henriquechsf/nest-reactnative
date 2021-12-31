@@ -1,0 +1,12 @@
+instalar as libs react native elements e papper
+npm install react-native-elements
+npm install react-native-vector-icons
+npm install react-native-paper
+
+
+formatação dos estilos
+
+Navegação entre telas
+npm install @react-navigation/native
+npm install react-native-screens react-native-safe-area-context
+npm install @react-navigation/native-stack
