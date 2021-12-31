@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {Button} from 'react-native-elements/dist/buttons/Button';
 import {Input} from 'react-native-elements/dist/input/Input';
@@ -19,6 +19,10 @@ const LoginScreen = ({navigation}) => {
     });
   };
 
+  const cadastrar = () => {
+    navigation.navigate('Cadastro');
+  };
+
   return (
     <View style={styles.container}>
       <Text h3>Login</Text>
@@ -34,13 +38,28 @@ const LoginScreen = ({navigation}) => {
         onChangeText={value => setPassword(value)}
         secureTextEntry={true}
       />
+
       <Button
         icon={<Icon name="arrow-right" size={15} color="black" />}
-        title="Entrar"
+        title=" Entrar"
+        buttonStyle={buttonStyles.button}
         onPress={() => entrar()}
+      />
+
+      <Button
+        icon={<Icon name="user" size={15} color="black" />}
+        title=" Cadastrar"
+        buttonStyle={buttonStyles.button}
+        onPress={() => cadastrar()}
       />
     </View>
   );
 };
 
 export default LoginScreen;
+
+const buttonStyles = StyleSheet.create({
+  button: {
+    marginTop: 10,
+  },
+});

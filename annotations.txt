@@ -13,3 +13,4 @@ npm install @react-navigation/native-stack
 
 Bottom navigation
 npm install @react-navigation/bottom-tabs
+
