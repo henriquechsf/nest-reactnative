@@ -1,9 +1,13 @@
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
-import {Text} from 'react-native-elements';
-import {Button} from 'react-native-elements/dist/buttons/Button';
-import {CheckBox} from 'react-native-elements/dist/checkbox/CheckBox';
-import {Input} from 'react-native-elements/dist/input/Input';
+import {Alert, KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
+import {Text, Button, CheckBox, Input} from 'react-native-elements';
+import {
+  Button as PaperButton,
+  Dialog,
+  Paragraph,
+  Portal,
+  Provider,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import usuarioService from '../services/usuario.service';
 import styles from '../style/main-style';
@@ -23,6 +27,14 @@ const CadastroScreen = ({navigation}) => {
   const [errorCpf, setErrorCpf] = useState(null);
   const [errorTelefone, setErrorTelefone] = useState(null);
   const [errorSenha, setErrorSenha] = useState(null);
+
+  // Dialog Paper
+  const [visible, setVisible] = useState(false);
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
+
+  const [titulo, setTitulo] = useState(null);
+  const [mensagem, setMensagem] = useState(null);
 
   const validar = () => {
     let error: boolean = false;
@@ -49,12 +61,11 @@ const CadastroScreen = ({navigation}) => {
   const salvar = () => {
     if (validar()) {
       setLoading(true);
-      console.log('salvando...');
 
       let data = {
         email: email,
-        cpf: cpf,
         nome: nome,
+        cpf: cpf,
         telefone: telefone,
         senha: senha,
       };
@@ -63,12 +74,17 @@ const CadastroScreen = ({navigation}) => {
         .cadastrar(data)
         .then(response => {
           setLoading(false);
-          console.log(response.data);
+          const titulo = response.data.status ? 'Sucesso' : 'Erro';
+
+          // Alert.alert(titulo, response.data.mensagem);
+          setTitulo(titulo);
+          setMensagem(response.data.mensagem);
+          showDialog();
         })
         .catch(error => {
           setLoading(false);
-          console.log(error);
-          console.log('Deu erro');
+          setTitulo('Erro');
+          setMensagem('Opps, erro inesperado');
         });
     }
   };
@@ -149,6 +165,20 @@ const CadastroScreen = ({navigation}) => {
         buttonStyle={customStyles.button}
         onPress={() => salvar()}
       />
+
+      <Provider>
+        <Portal>
+          <Dialog visible={visible} onDismiss={hideDialog}>
+            <Dialog.Title>{titulo}</Dialog.Title>
+            <Dialog.Content>
+              <Paragraph>{mensagem}</Paragraph>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <PaperButton onPress={hideDialog}>Ok</PaperButton>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </Provider>
     </KeyboardAvoidingView>
   );
 };
