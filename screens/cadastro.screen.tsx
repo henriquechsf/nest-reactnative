@@ -16,8 +16,33 @@ const CadastroScreen = ({navigation}) => {
 
   const [isSelected, setSelected] = useState(false);
 
+  const [errorEmail, setErrorEmail] = useState(null);
+  const [errorNome, setErrorNome] = useState(null);
+  const [errorCpf, setErrorCpf] = useState(null);
+  const [errorTelefone, setErrorTelefone] = useState(null);
+
+  const validar = () => {
+    let error: boolean = false;
+
+    setErrorEmail(null);
+    setErrorCpf(null);
+
+    if (email == null) {
+      setErrorEmail('Preencha seu e-mail');
+      error = true;
+    }
+    if (cpf == null) {
+      setErrorCpf('Preencha seu CPF');
+      error = true;
+    }
+
+    return !error;
+  };
+
   const salvar = () => {
-    console.log('salvou');
+    if (validar()) {
+      console.log('salvou');
+    }
   };
 
   return (
@@ -25,16 +50,28 @@ const CadastroScreen = ({navigation}) => {
       <Text h3>Cadastre-se</Text>
       <Input
         placeholder="E-mail"
-        onChangeText={value => setEmail(value)}
+        onChangeText={value => {
+          setEmail(value);
+          setErrorEmail(null);
+        }}
         keyboardType="email-address"
+        errorMessage={errorEmail}
       />
 
-      <Input placeholder="Nome" onChangeText={value => setNome(value)} />
+      <Input
+        placeholder="Nome"
+        onChangeText={value => setNome(value)}
+        errorMessage={errorNome}
+      />
 
       <Input
         placeholder="CPF"
-        onChangeText={value => setCpf(value)}
+        onChangeText={value => {
+          setCpf(value);
+          setErrorCpf(null);
+        }}
         keyboardType="number-pad"
+        errorMessage={errorCpf}
       />
 
       <Input
@@ -42,6 +79,7 @@ const CadastroScreen = ({navigation}) => {
         onChangeText={value => setTelefone(value)}
         keyboardType="phone-pad"
         returnKeyType="done"
+        errorMessage={errorTelefone}
       />
 
       <CheckBox
