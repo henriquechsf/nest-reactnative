@@ -1,14 +1,8 @@
 import React, {useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet} from 'react-native';
 import {Text, Button, CheckBox, Input} from 'react-native-elements';
-import {
-  Button as PaperButton,
-  Dialog,
-  Paragraph,
-  Portal,
-  Provider,
-} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CustomDialog from '../components/CustomDialog';
 import usuarioService from '../services/usuario.service';
 import styles from '../style/main-style';
 
@@ -29,12 +23,21 @@ const CadastroScreen = ({navigation}) => {
   const [errorSenha, setErrorSenha] = useState(null);
 
   // Dialog Paper
-  const [visible, setVisible] = useState(false);
-  const showDialog = () => setVisible(true);
-  const hideDialog = () => setVisible(false);
-
+  const [visibleDialog, setVisibleDialog] = useState(false);
   const [titulo, setTitulo] = useState(null);
   const [mensagem, setMensagem] = useState(null);
+  const [tipo, setTipo] = useState(null);
+
+  const showDialog = (titulo, mensagem, tipo) => {
+    setVisibleDialog(true);
+    setTitulo(titulo);
+    setMensagem(mensagem);
+    setTipo(tipo);
+  };
+
+  const hideDialog = status => {
+    setVisibleDialog(status);
+  };
 
   const validar = () => {
     let error: boolean = false;
@@ -75,16 +78,16 @@ const CadastroScreen = ({navigation}) => {
         .then(response => {
           setLoading(false);
           const titulo = response.data.status ? 'Sucesso' : 'Erro';
+          showDialog(titulo, response.data.mensagem, 'SUCESSO');
 
           // Alert.alert(titulo, response.data.mensagem);
-          setTitulo(titulo);
-          setMensagem(response.data.mensagem);
-          showDialog();
+          // setTitulo(titulo);
+          // setMensagem(response.data.mensagem);
+          // showDialog();
         })
         .catch(error => {
           setLoading(false);
-          setTitulo('Erro');
-          setMensagem('Opps, erro inesperado');
+          showDialog('Erro', 'Opps, erro inesperado', 'ERRO');
         });
     }
   };
@@ -166,19 +169,15 @@ const CadastroScreen = ({navigation}) => {
         onPress={() => salvar()}
       />
 
-      <Provider>
-        <Portal>
-          <Dialog visible={visible} onDismiss={hideDialog}>
-            <Dialog.Title>{titulo}</Dialog.Title>
-            <Dialog.Content>
-              <Paragraph>{mensagem}</Paragraph>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <PaperButton onPress={hideDialog}>Ok</PaperButton>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </Provider>
+      {visibleDialog && (
+        <CustomDialog
+          titulo={titulo}
+          mensagem={mensagem}
+          tipo={tipo}
+          visible={visibleDialog}
+          onClose={hideDialog}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 };
