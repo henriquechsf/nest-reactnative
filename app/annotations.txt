@@ -20,3 +20,5 @@ validações e mensagem de erro
 
 Mascara de Formularios
 npm install react-native-masked-text
+
+!parou na aula 23

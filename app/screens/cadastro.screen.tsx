@@ -5,6 +5,7 @@ import {Button} from 'react-native-elements/dist/buttons/Button';
 import {CheckBox} from 'react-native-elements/dist/checkbox/CheckBox';
 import {Input} from 'react-native-elements/dist/input/Input';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import usuarioService from '../services/usuario.service';
 import styles from '../style/main-style';
 
 const CadastroScreen = ({navigation}) => {
@@ -12,13 +13,16 @@ const CadastroScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [cpf, setCpf] = useState(null);
   const [telefone, setTelefone] = useState(null);
+  const [senha, setSenha] = useState(null);
 
   const [isSelected, setSelected] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const [errorEmail, setErrorEmail] = useState(null);
   const [errorNome, setErrorNome] = useState(null);
   const [errorCpf, setErrorCpf] = useState(null);
   const [errorTelefone, setErrorTelefone] = useState(null);
+  const [errorSenha, setErrorSenha] = useState(null);
 
   const validar = () => {
     let error: boolean = false;
@@ -34,13 +38,38 @@ const CadastroScreen = ({navigation}) => {
       setErrorCpf('Preencha seu CPF');
       error = true;
     }
+    if (senha == null) {
+      setErrorSenha('Preencha a senha');
+      error = true;
+    }
 
     return !error;
   };
 
   const salvar = () => {
     if (validar()) {
-      console.log('salvou');
+      setLoading(true);
+      console.log('salvando...');
+
+      let data = {
+        email: email,
+        cpf: cpf,
+        nome: nome,
+        telefone: telefone,
+        senha: senha,
+      };
+
+      usuarioService
+        .cadastrar(data)
+        .then(response => {
+          setLoading(false);
+          console.log(response.data);
+        })
+        .catch(error => {
+          setLoading(false);
+          console.log(error);
+          console.log('Deu erro');
+        });
     }
   };
 
@@ -93,6 +122,16 @@ const CadastroScreen = ({navigation}) => {
         keyboardType="phone-pad"
         returnKeyType="done"
         errorMessage={errorTelefone}
+      />
+
+      <Input
+        placeholder="Senha"
+        onChangeText={value => {
+          setSenha(value);
+          setErrorSenha(null);
+        }}
+        errorMessage={errorSenha}
+        secureTextEntry={true}
       />
 
       <CheckBox
