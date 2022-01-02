@@ -21,4 +21,12 @@ validações e mensagem de erro
 Mascara de Formularios
 npm install react-native-masked-text
 
-!parou na aula 23
+
+## AUTHENTICATION API NEST
+
+npm install --save @nestjs/passport passport passport-local
+npm install --save-dev @types/passport-local
+
+- criar um modulo de autenticação e service
+nest g module auth
+nest g service auth
