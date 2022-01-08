@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { ResultadoDTO } from 'src/dto/resultado.dto';
 import { UsuarioCadastrarDTO } from './dto/usuario-cadastrar.dto';
 import { Usuario } from './usuario.entity';
@@ -22,6 +23,7 @@ export class UsuarioController {
     private authService: AuthService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async listar(): Promise<Usuario[]> {
     return await this.usuarioService.listar();
@@ -32,7 +34,6 @@ export class UsuarioController {
     return await this.usuarioService.cadastrar(data);
   }
 
-  @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
