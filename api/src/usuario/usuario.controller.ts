@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from 'src/auth/auth.service';
 import { ResultadoDTO } from 'src/dto/resultado.dto';
 import { UsuarioCadastrarDTO } from './dto/usuario-cadastrar.dto';
 import { Usuario } from './usuario.entity';
@@ -16,7 +17,10 @@ import { UsuarioService } from './usuario.service';
 
 @Controller('usuarios')
 export class UsuarioController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private authService: AuthService,
+  ) {}
 
   @Get()
   async listar(): Promise<Usuario[]> {
@@ -32,6 +36,6 @@ export class UsuarioController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
-    return req.user;
+    return this.authService.login(req.user);
   }
 }
