@@ -30,3 +30,8 @@ npm install --save-dev @types/passport-local
 - criar um modulo de autenticação e service
 nest g module auth
 nest g service auth
+
+## AUTHENTICATION JWT
+
+
+## Integração do backend com o app
