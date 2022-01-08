@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {AsyncStorage} from 'react-native';
 
 class UsuarioService {
   async cadastrar(data: any) {
@@ -30,6 +31,7 @@ class UsuarioService {
       },
     })
       .then(response => {
+        AsyncStorage.setItem('TOKEN', response.data.access_token);
         return Promise.resolve(response);
       })
       .catch(error => {
