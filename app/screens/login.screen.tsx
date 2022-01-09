@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native-elements';
 import {Button} from 'react-native-elements/dist/buttons/Button';
@@ -7,11 +7,13 @@ import {ActivityIndicator} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import usuarioService from '../services/usuario.service';
 import styles from '../style/main-style';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
   const [isLoading, setLoading] = useState(false);
+  const [isLoadingToken, setLoadingToken] = useState(false);
 
   const entrar = () => {
     let data = {
@@ -37,43 +39,76 @@ const LoginScreen = ({navigation}) => {
       });
   };
 
+  const logarComToken = token => {
+    setLoadingToken(true);
+
+    let data = {
+      token: token,
+    };
+
+    usuarioService
+      .loginComToken(data)
+      .then(response => {
+        setLoadingToken(false);
+
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Principal'}],
+        });
+      })
+      .catch(error => {
+        setLoadingToken(false);
+      });
+  };
+
   const cadastrar = () => {
     navigation.navigate('Cadastro');
   };
 
+  useEffect(() => {
+    AsyncStorage.getItem('TOKEN').then(token => {
+      logarComToken(token);
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text h3>Login</Text>
-      <Input
-        placeholder="E-mail"
-        leftIcon={{type: 'font-awesome', name: 'envelope'}}
-        onChangeText={value => setEmail(value)}
-        keyboardType="email-address"
-      />
-      <Input
-        placeholder="Senha"
-        leftIcon={{type: 'font-awesome', name: 'lock'}}
-        onChangeText={value => setPassword(value)}
-        secureTextEntry={true}
-      />
+      {isLoadingToken && <Text>So um minutinho...</Text>}
 
-      {isLoading && <ActivityIndicator />}
+      {!isLoadingToken && (
+        <>
+          <Text h3>Login</Text>
+          <Input
+            placeholder="E-mail"
+            leftIcon={{type: 'font-awesome', name: 'envelope'}}
+            onChangeText={value => setEmail(value)}
+            keyboardType="email-address"
+          />
+          <Input
+            placeholder="Senha"
+            leftIcon={{type: 'font-awesome', name: 'lock'}}
+            onChangeText={value => setPassword(value)}
+            secureTextEntry={true}
+          />
 
-      {!isLoading && (
-        <Button
-          icon={<Icon name="arrow-right" size={15} color="black" />}
-          title=" Entrar"
-          buttonStyle={buttonStyles.button}
-          onPress={() => entrar()}
-        />
+          {isLoading && <ActivityIndicator />}
+
+          {!isLoading && (
+            <Button
+              icon={<Icon name="arrow-right" size={15} color="black" />}
+              title=" Entrar"
+              buttonStyle={buttonStyles.button}
+              onPress={() => entrar()}
+            />
+          )}
+          <Button
+            icon={<Icon name="user" size={15} color="black" />}
+            title=" Cadastrar"
+            buttonStyle={buttonStyles.button}
+            onPress={() => cadastrar()}
+          />
+        </>
       )}
-
-      <Button
-        icon={<Icon name="user" size={15} color="black" />}
-        title=" Cadastrar"
-        buttonStyle={buttonStyles.button}
-        onPress={() => cadastrar()}
-      />
     </View>
   );
 };
