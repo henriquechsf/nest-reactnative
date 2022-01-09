@@ -6,6 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
+import { Usuario } from 'src/usuario/usuario.entity';
 import { UsuarioService } from 'src/usuario/usuario.service';
 import { Repository } from 'typeorm';
 import { Token } from './token.entity';
@@ -47,6 +48,17 @@ export class TokenService {
         },
         HttpStatus.UNAUTHORIZED,
       );
+    }
+  }
+
+  async getUsuarioByToken(token: string) {
+    const objToken: Token = await this.tokenRepository.findOne({ hash: token });
+
+    if (objToken) {
+      const usuario = await this.usuarioService.findOne(objToken.username);
+      return usuario;
+    } else {
+      return null;
     }
   }
 }
